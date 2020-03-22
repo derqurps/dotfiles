@@ -169,7 +169,8 @@ echo "done"
 
 
 declare -a FILES_TO_SYMLINK=(
-
+  '../dotfiles'
+  'shell/p10k.zsh'
   'shell/shell_aliases'
   'shell/shell_config'
   'shell/shell_exports'
@@ -235,13 +236,18 @@ main() {
   unset FILES_TO_SYMLINK
 
 }
-
+install_fonts () {
+  mkdir "$HOME/.fonts"
+  cp "$(pwd)/fonts/* $HOME/.fonts"
+  fc-cache -f -v
+}
 install_zsh () {
   # Test to see if zshell is installed.  If it is:
   if [ -f /bin/zsh -o -f /usr/bin/zsh ]; then
     # Install Oh My Zsh if it isn't already present
     if [[ ! -d $dir/oh-my-zsh/ ]]; then
       sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+      git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k
     fi
     # Set the default shell to zsh if it isn't currently set to zsh
     if [[ ! $(echo $SHELL) == $(which zsh) ]]; then
@@ -270,7 +276,8 @@ install_zsh () {
 }
 
 main
-# install_zsh
+install fonts
+install_zsh
 
 ###############################################################################
 # Atom                                                                        #
